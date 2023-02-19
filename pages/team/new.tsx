@@ -1,14 +1,28 @@
+import { useEffect } from 'react';
 import Head from 'next/head'
-import Image from 'next/image'
+import { db } from '@/initFirebase'
+import { collection, getDocs } from "firebase/firestore";
 
-import Box from '@mui/material/Box'
+export default function NewTeam() {
 
-export const NewTeam = () => {
+  useEffect(() => {
+
+
+    const test = async () => {
+
+      const querySnapshot = await getDocs(collection(db, "members"));
+      querySnapshot.forEach((doc) => {
+  // doc.data() is never undefined for query doc snapshots
+  console.log(doc.id, " => ", doc.data());
+})
+    }
+    test()
+  }, [])
+
   return (
     <>
       <Head>
         <title>Cake - New Team</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main>
       </main>
