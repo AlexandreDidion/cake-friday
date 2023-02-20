@@ -46,7 +46,7 @@ const MEMBER_FIELDS = Object.freeze(
   ]
 )
 
-export const MemberForm = ({onFormSubmit} : {onFormSubmit: () => void}) => {
+export const MemberForm = ({onFormSubmit} : {onFormSubmit: (member: MemberObject) => void}) => {
   const [member, setMember] = useState<MemberObject>({
     firstName: '',
     lastName: '',
@@ -111,7 +111,7 @@ export const MemberForm = ({onFormSubmit} : {onFormSubmit: () => void}) => {
       return
     }
 
-    if (!!onFormSubmit) onFormSubmit()
+    if (!!onFormSubmit) onFormSubmit(member)
   }
 
   return (

@@ -1,26 +1,48 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head'
 import { db } from '@/initFirebase'
-import { collection, getDocs } from "firebase/firestore"
+import { collection, setDoc, doc } from "firebase/firestore"
+import { Member, memberConvertor } from '@/models/members'
 
-import { MemberForm } from '@/components/MemberForm';
+import { MemberForm } from '@/components/MemberForm'
+import { Loader } from '@/components/Loader';
+
+interface MemberObject {
+  firstName: string
+  lastName: string
+  email: string
+}
 
 export default function NewTeam() {
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const test = async () => {
-
-      const querySnapshot = await getDocs(collection(db, "members"));
-      querySnapshot.forEach((doc) => {
-  // doc.data() is never undefined for query doc snapshots
-  console.log(doc.id, " => ", doc.data());
-})
-    }
-    test()
+    // const test = new Member({
+    //   firstName: 'Alex',
+    //   lastName: 'Poulet',
+    //   email: 'ale.poulet@gmail.com'
+    // })
+    // console.log(test, test.fullName(), test.createdAt)
   }, [])
 
-  const onSubmit = () => {
+  const createMember = async (member: MemberObject) => {
+    const newMember = new Member({
+      firstName: member.firstName,
+      lastName: member.lastName,
+      email: member.email,
+    })
 
+    const newMemberRef = doc(collection(db, "members")).withConverter(memberConvertor)
+
+    await setDoc(newMemberRef, newMember)
+  }
+
+  const onSubmit = async (member: MemberObject) => {
+    if (!member) return
+
+    setIsLoading(true)
+    await createMember(member)
+    setIsLoading(false)
   }
 
   return (
@@ -28,6 +50,7 @@ export default function NewTeam() {
       <Head>
         <title>Cake - New Team</title>
       </Head>
+      {isLoading && (<Loader />)}
       <main>
         <MemberForm
           onFormSubmit={onSubmit}
