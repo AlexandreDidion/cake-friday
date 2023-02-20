@@ -1,5 +1,5 @@
 import styles from '@/styles/Navbar.module.scss'
-import Link from 'next/link';
+import Link from 'next/link'
 
 import Box from '@mui/material/Box'
 

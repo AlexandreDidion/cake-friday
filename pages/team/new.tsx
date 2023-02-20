@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import Head from 'next/head'
 import { db } from '@/initFirebase'
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore"
+
+import { MemberForm } from '@/components/MemberForm';
 
 export default function NewTeam() {
 
   useEffect(() => {
-
-
     const test = async () => {
 
       const querySnapshot = await getDocs(collection(db, "members"));
@@ -19,12 +19,19 @@ export default function NewTeam() {
     test()
   }, [])
 
+  const onSubmit = () => {
+
+  }
+
   return (
     <>
       <Head>
         <title>Cake - New Team</title>
       </Head>
       <main>
+        <MemberForm
+          onFormSubmit={onSubmit}
+        />
       </main>
     </>
   )
