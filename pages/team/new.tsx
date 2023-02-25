@@ -5,7 +5,7 @@ import { collection, setDoc, doc } from "firebase/firestore"
 import { Member, memberConvertor } from '@/models/members'
 
 import { MemberForm } from '@/components/MemberForm'
-import { Loader } from '@/components/Loader';
+import { Loader } from '@/components/Loader'
 
 interface MemberObject {
   firstName: string

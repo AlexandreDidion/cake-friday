@@ -1,0 +1,29 @@
+.signInFields {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .textField {
+    margin: 0.5rem 0rem;
+  }
+
+  .namesFields {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+  }
+
+  .header {
+    margin-bottom: 0.75rem;
+  }
+
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.25rem;
+  }
+
+  .errorContainer {
+    margin: 0.5rem 0rem;
+  }
+}
