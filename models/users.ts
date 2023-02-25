@@ -1,6 +1,6 @@
 import { Human } from './humans'
 import { QueryDocumentSnapshot, SnapshotOptions } from '@firebase/firestore-types'
-
+import { DocumentData, PartialWithFieldValue } from 'firebase/firestore'
 export class User extends Human {
   password: string
 
@@ -14,7 +14,7 @@ export class User extends Human {
 
 // Firestore data converter
 export const userConvertor = {
-  toFirestore: (user: User) => {
+  toFirestore: (user: PartialWithFieldValue<User>) : DocumentData => {
     return {
       name: {
         first: user.firstName,
@@ -27,8 +27,8 @@ export const userConvertor = {
   },
   fromFirestore: (
     snapshot: QueryDocumentSnapshot,
-    options: SnapshotOptions
-  ) => {
+    options?: SnapshotOptions
+  ) : User => {
     const data = snapshot.data(options)
     return new User({
       firstName: data.name.first,

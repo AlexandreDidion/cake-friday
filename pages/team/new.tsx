@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Head from 'next/head'
 import { db } from '@/initFirebase'
 import { collection, setDoc, doc } from "firebase/firestore"
@@ -16,15 +16,6 @@ interface MemberObject {
 export default function NewTeam() {
   const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-    // const test = new Member({
-    //   firstName: 'Alex',
-    //   lastName: 'Poulet',
-    //   email: 'ale.poulet@gmail.com'
-    // })
-    // console.log(test, test.fullName(), test.createdAt)
-  }, [])
-
   const createMember = async (member: MemberObject) => {
     const newMember = new Member({
       firstName: member.firstName,
@@ -32,7 +23,7 @@ export default function NewTeam() {
       email: member.email,
     })
 
-    const newMemberRef = doc(collection(db, "members")).withConverter(memberConvertor)
+    const newMemberRef = doc(collection(db, "members")).withConverter(memberConvertor as any)
 
     await setDoc(newMemberRef, newMember)
   }
