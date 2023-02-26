@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import styles from '@/styles/SignIn.module.scss'
-import Link from 'next/link'
+import styles from '@/styles/Auth.module.scss'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -27,7 +26,7 @@ const VALIDATIONS_TYPES : { [key: string]: Function } = Object.freeze({
   lastName: nonEmptyString,
 })
 
-export const SignIn = ({onSignIn} : {onSignIn: (user: UserObject) => void}) => {
+export const SignUp = ({onSignUp} : {onSignUp: (user: UserObject) => void}) => {
   const [user, setUser] = useState({
     email: '',
     password: '',
@@ -78,11 +77,11 @@ export const SignIn = ({onSignIn} : {onSignIn: (user: UserObject) => void}) => {
       return
     }
 
-    onSignIn(user)
+    onSignUp(user)
   }
 
   return (
-    <Box component='section' className={styles.signInFields}>
+    <Box component='section' className={styles.fields}>
       <h2 className={styles.header}>Please, sign in</h2>
       <TextField
         label="Email"

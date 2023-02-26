@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styles from '@/styles/SignIn.module.scss'
+import styles from '@/styles/Auth.module.scss'
 
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
@@ -71,7 +71,7 @@ export const LogIn = ({onLogIn} : {onLogIn: (user: UserObject) => void}) => {
   }
 
   return (
-    <Box component='section' className={styles.signInFields}>
+    <Box component='section' className={styles.fields}>
       <h2 className={styles.header}>Please, log in</h2>
       <TextField
         label="Email"
