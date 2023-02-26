@@ -3,10 +3,11 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import styles from '@/styles/SignIn.module.scss'
 
-import { SignIn, UserObject } from '@/components/SignIn'
+import { SignIn, UserObject as SignInObject } from '@/components/SignIn'
+import { LogIn, UserObject as LogInObject  } from '@/components/LogIn'
 import { ErrorCard } from '@/components/ErrorCard'
 import { Loader } from '@/components/Loader'
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth"
 import { doc, setDoc } from "firebase/firestore"
 
 import { auth, db } from '@/initFirebase'
@@ -16,8 +17,9 @@ export default function Auth() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const hasCurrentUser = !!auth.currentUser
 
-  const createUser = async (user: UserObject, newUserId: string) => {
+  const createUser = async (user: SignInObject, newUserId: string) => {
     const newUser = new User({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -31,7 +33,7 @@ export default function Auth() {
   }
 
 
-  const onSignIn = async (user: UserObject) => {
+  const onSignIn = async (user: SignInObject) => {
     setIsLoading(true)
 
     let newUser
@@ -55,6 +57,26 @@ export default function Auth() {
     }
   }
 
+  const onLogIn = async (user: LogInObject) => {
+    setIsLoading(true)
+
+    let loggedUser
+    try {
+      loggedUser = await signInWithEmailAndPassword(auth, user.email, user.password)
+    } catch(err: any) {
+      setIsLoading(false)
+      const errorCode = err.code
+      const errorMessage = err.message
+      setErrorMessage(errorMessage)
+      console.log(errorCode, errorMessage)
+    }
+
+    if (loggedUser) {
+      setIsLoading(false)
+      router.push('/')
+    }
+  }
+
   return (
     <>
       <Head>
@@ -62,7 +84,10 @@ export default function Auth() {
       </Head>
       {isLoading && (<Loader />)}
       <main className={styles.main}>
-        <SignIn onSignIn={onSignIn} />
+        {hasCurrentUser
+          ? <LogIn onLogIn={onLogIn} />
+          : <SignIn onSignIn={onSignIn}/>
+        }
         {!!errorMessage && (
           <ErrorCard
             errorMessage={errorMessage}
