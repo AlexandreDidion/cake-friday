@@ -1,8 +1,18 @@
 import { Human } from './humans'
+import { doc } from "firebase/firestore"
+import { db } from '@/initFirebase';
 import { QueryDocumentSnapshot, SnapshotOptions } from '@firebase/firestore-types';
-import { DocumentData, WithFieldValue } from 'firebase/firestore'
+import { DocumentData, WithFieldValue, CollectionReference } from 'firebase/firestore'
 
 export class Member extends Human {
+  userId: string | undefined
+
+  constructor (
+    {firstName, lastName, email, userId} : {firstName : string, lastName: string, email: string, userId: string | undefined}
+  ) {
+    super({firstName, lastName, email})
+    this.userId = userId
+  }
 }
 
 // Firestore data converter
@@ -14,7 +24,8 @@ export const memberConvertor = {
         last: member.lastName,
       },
       email: member.email,
-      createdAt: member.createdAt
+      createdAt: member.createdAt,
+      userRef: doc(db, `users/${member.userId}`)
     }
   },
   fromFirestore: (
@@ -25,7 +36,8 @@ export const memberConvertor = {
     return new Member({
       firstName: data.name.first,
       lastName: data.name.last,
-      email: data.name.email
+      email: data.email,
+      userId: data.userRef.replace(/users\//,'')
     })
   }
 }

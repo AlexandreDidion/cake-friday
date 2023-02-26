@@ -34,7 +34,7 @@ export const userConvertor = {
       firstName: data.name.first,
       lastName: data.name.last,
       password: data.password,
-      email: data.name.email,
+      email: data.email,
     })
   }
 }
