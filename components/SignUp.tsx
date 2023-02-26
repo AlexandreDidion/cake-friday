@@ -82,7 +82,7 @@ export const SignUp = ({onSignUp} : {onSignUp: (user: UserObject) => void}) => {
 
   return (
     <Box component='section' className={styles.fields}>
-      <h2 className={styles.header}>Please, sign in</h2>
+      <h2 className={styles.header}>Please, sign up</h2>
       <TextField
         label="Email"
         name="email"

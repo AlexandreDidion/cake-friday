@@ -10,13 +10,11 @@ import { LogIn, UserObject as LogInObject } from '@/components/LogIn'
 
 import { signUp, logIn } from '@/services/firebaseAuth'
 
-import { auth } from '@/initFirebase'
-
 export default function Auth() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const hasCurrentUser = !!auth.currentUser
+  const isLogIn = () => router.query.action === 'logIn'
 
   const onErrorAuth = (err: any) => {
     setIsLoading(false)
@@ -53,7 +51,7 @@ export default function Auth() {
       </Head>
       {isLoading && (<Loader />)}
       <main className={styles.main}>
-        {hasCurrentUser
+        {isLogIn()
           ? <LogIn onLogIn={onLogIn} />
           : <SignUp onSignUp={onSignUp}/>
         }

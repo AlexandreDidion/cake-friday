@@ -61,10 +61,10 @@ export const logIn = async (user: LogInObject, onError: (error: any) => void)  =
   return loggedUser
 }
 
-export const logOut = async (onError: (error: any) => void) => {
+export const logOut = async (onError?: (error: any) => void) => {
   try {
     await signOut(auth)
   } catch(err: any) {
-    onError(err)
+    if (onError) onError(err)
   }
 }

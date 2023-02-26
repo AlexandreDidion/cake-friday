@@ -1,34 +1,65 @@
 import { useState } from 'react'
 import styles from '@/styles/BurgerMenu.module.scss'
+import { useRouter } from 'next/router'
 
 import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
+import { Loader } from '@/components/Loader'
 import Image from 'next/image'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 
-const OPTIONS = Object.freeze([
-  'Log In',
-  'Sign In'
+import { auth } from '@/initFirebase'
+import { logOut } from '@/services/firebaseAuth'
+
+const OPTIONS_NOT_CONNECTED = Object.freeze([
+  {label: 'Log In', name: 'logIn'},
+  {label: 'Sign Up', name: 'signUp'},
+])
+
+const OPTIONS_CONNECTED = Object.freeze([
+  {label: 'Log Out', name: 'logOut'},
 ])
 
 export const BurgerMenu = () => {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const isConnected = !!auth.currentUser
+
+  const options = isConnected ? OPTIONS_CONNECTED : OPTIONS_NOT_CONNECTED
+
+  const redirect = (action: string) => router.push({ pathname: '/auth', query: {action: action} })
+
+  const onLogOut = async () => {
+    setIsLoading(true)
+    await logOut()
+    setIsLoading(false)
+  }
+
+  const actions : {[key: string]: Function} = {
+    logIn: () => redirect('logIn'),
+    signUp: () => redirect('signUp'),
+    logOut: onLogOut,
+  }
 
   const open = !!anchorEl
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget)
   }
 
-  const handleClose = () => {
+  const handleClose = (e: React.MouseEvent<HTMLElement>) => {
+    if (!e.currentTarget) return
+
+    const idElement = e.currentTarget?.id
+    if (idElement && Object.keys(actions).includes(idElement)) actions[e.currentTarget.id]()
     setAnchorEl(null)
   }
 
   return (
     <div>
+      {isLoading && (<Loader />)}
       <IconButton
         aria-label="more"
         id="long-button"
@@ -53,9 +84,9 @@ export const BurgerMenu = () => {
         open={open}
         onClose={handleClose}
       >
-        {OPTIONS.map((option) => (
-          <MenuItem key={option} onClick={handleClose}>
-            {option}
+        {options.map((option) => (
+          <MenuItem id={option.name} key={option.name} onClick={handleClose}>
+            {option.label}
           </MenuItem>
         ))}
       </Menu>
