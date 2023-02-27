@@ -1,6 +1,6 @@
 import { FirebaseOptions, getApp, initializeApp } from "firebase/app"
 import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
-import { getAuth, connectAuthEmulator } from "firebase/auth"
+import { getAuth, connectAuthEmulator, onAuthStateChanged, User } from "firebase/auth"
 
 
 const config: FirebaseOptions = {
@@ -26,3 +26,11 @@ export const db = getFirestore(firebaseApp)
 export const auth = getAuth(firebaseApp)
 connectFirestoreEmulator(db, 'localhost', 8080)
 connectAuthEmulator(auth, 'http://localhost:9099')
+
+export const getCurrentUser : () => Promise<User | null> = () => {
+  return new Promise((resolve) => {
+    onAuthStateChanged(auth, (user) => {
+      resolve(user)
+    })
+  })
+}

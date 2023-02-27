@@ -1,41 +1,40 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head'
-import { db, auth } from '@/initFirebase'
-import { collection, query, where, getDocs, getDoc, doc, DocumentData} from "firebase/firestore"
-import { Member, memberConvertor } from '@/models/members'
+import { db } from '@/initFirebase'
+import { collection, query, where, getDocs, doc, DocumentData} from "firebase/firestore"
+import { memberConvertor } from '@/models/members'
+import { getCurrentUser } from '@/initFirebase'
 
-import { MemberForm } from '@/components/MemberForm'
 import { Loader } from '@/components/Loader'
 
-interface MemberObject {
-  firstName: string
-  lastName: string
-  email: string
-}
+const currentUser = await getCurrentUser()
 
 export default function MineTeam() {
   const [isLoading, setIsLoading] = useState(false)
   const [myMembers, setMyMembers] = useState<DocumentData[]>([])
 
-  const getMyMembers = async (currentUserId: string | undefined) => {
+  const getMyMembers = async () => {
     setIsLoading(true)
-    if (!currentUserId) return
+    if (!currentUser?.uid) return
 
     const memberQuery = query(
-      collection(db, "members"), where("userRef", "==", doc(db, `users/${currentUserId}`))
+      collection(db, "members"), where("userRef", "==", doc(db, `users/${currentUser?.uid}`))
     ).withConverter(memberConvertor as any)
+
     const querySnapshot = await getDocs(memberQuery)
+
     const members : DocumentData[] = []
+
     querySnapshot.forEach((doc) => {
       members.push(doc.data())
     })
     setMyMembers(members)
+
     setIsLoading(false)
   }
 
   useEffect(() => {
-    const currentUserId = auth.currentUser?.uid
-    getMyMembers(currentUserId)
+    getMyMembers()
   }, [])
 
 
@@ -45,8 +44,8 @@ export default function MineTeam() {
         <title>Cake - My Team</title>
       </Head>
       {isLoading && (<Loader />)}
-      {myMembers.map((member) => (
-        <p key='member'>{member.fullName()}</p>
+      {myMembers.map((member, key) => (
+        <p key={key}>{member.fullName()}</p>
       ))}
       <main>
       </main>
