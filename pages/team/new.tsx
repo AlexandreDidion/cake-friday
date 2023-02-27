@@ -51,6 +51,12 @@ export default function NewTeam() {
         <MemberForm
           onFormSubmit={onSubmit}
         />
+        <p>Or import from excel:</p>
+        <input
+          type='file'
+          accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+          id="import-excel"
+          ></input>
       </main>
     </>
   )

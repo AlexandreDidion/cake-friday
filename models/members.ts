@@ -37,7 +37,7 @@ export const memberConvertor = {
       firstName: data.name.first,
       lastName: data.name.last,
       email: data.email,
-      userId: data.userRef.replace(/users\//,'')
+      userId: data.userRef.id
     })
   }
 }
