@@ -1,4 +1,4 @@
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 import { MemberRow } from '@/pages/team/mine'
 
@@ -18,6 +18,9 @@ export const MemberTable = ({rows, columns} : {rows: MemberRow[], columns: GridC
               borderColor: '#1B9AAA',
             },
             '& .MuiDataGrid-columnHeader:focus-within': {
+              outline: 'none',
+            },
+            '& .MuiDataGrid-cell:focus-within': {
               outline: 'none',
             },
             '& .MuiDataGrid-footerContainer': {
