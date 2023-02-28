@@ -18,6 +18,8 @@ const OPTIONS_NOT_CONNECTED = Object.freeze([
 ])
 
 const OPTIONS_CONNECTED = Object.freeze([
+  {label: 'My Team', name: 'myTeam'},
+  {label: 'Add Team Member', name: 'newMember'},
   {label: 'Log Out', name: 'logOut'},
 ])
 
@@ -29,7 +31,7 @@ export const BurgerMenu = () => {
 
   const options = isConnected ? OPTIONS_CONNECTED : OPTIONS_NOT_CONNECTED
 
-  const redirect = (action: string) => router.push({ pathname: '/auth', query: {action: action} })
+  const redirectwithQuery = (action: string) => router.push({ pathname: '/auth', query: {action: action} })
 
   const onLogOut = async () => {
     setIsLoading(true)
@@ -38,8 +40,10 @@ export const BurgerMenu = () => {
   }
 
   const actions : {[key: string]: Function} = {
-    logIn: () => redirect('logIn'),
-    signUp: () => redirect('signUp'),
+    logIn: () => redirectwithQuery('logIn'),
+    signUp: () => redirectwithQuery('signUp'),
+    myTeam: () => router.push('/team/mine'),
+    newMember: () => router.push('/team/new'),
     logOut: onLogOut,
   }
 
