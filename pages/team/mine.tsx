@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head'
 import { db } from '@/initFirebase'
 import { collection, query, where, getDocs, doc, DocumentData} from "firebase/firestore"
-import { memberConvertor } from '@/models/members'
+import { memberConvertor, Member } from '@/models/members'
 import { getCurrentUser } from '@/initFirebase'
 import { GridColDef } from '@mui/x-data-grid'
 import { Loader } from '@/components/Loader'
 import { MemberTable } from '@/components/MemberTable'
 import Box from '@mui/system/Box'
+
+import { getBakers } from '@/services/pickBakers';
 
 const currentUser = await getCurrentUser()
 
@@ -18,7 +20,8 @@ const TABLE_COLUMNS : GridColDef[] = [
     field: 'email',
     headerName: 'Email',
     width: 300,
-  }
+  },
+  { field: 'lastBakedAt', headerName: 'Last cake', width: 150 },
 ]
 
 export interface MemberRow {
@@ -40,13 +43,16 @@ export default function MineTeam() {
 
     const memberQuery = query(
       collection(db, "members"), where("userRef", "==", doc(db, `users/${currentUser?.uid}`))
-    ).withConverter(memberConvertor as any)
+    ).withConverter<Member>(memberConvertor as any)
 
     const querySnapshot = await getDocs(memberQuery)
 
-    const members : DocumentData[] = []
+    console.log(querySnapshot)
+
+    const members : Member[] = []
 
     querySnapshot.forEach((doc) => {
+      console.log(doc.data())
       members.push(doc.data())
     })
     setMyMembers(members)
@@ -60,10 +66,18 @@ export default function MineTeam() {
 
   useEffect(() => {
     const rows = myMembers.map((m, i) => {
-      return { id: i, firstName: m.firstName , lastName: m.lastName, email: m.email }
+      return {
+        id: i,
+        firstName: m.firstName ,
+        lastName: m.lastName,
+        email: m.email,
+        lastBakedAt: m.lastBakedAt
+      }
     })
     setRows(rows)
     setShowTable(true)
+    const test = getBakers(myMembers as Member[])
+    console.log(test)
   }, [myMembers])
 
   return (

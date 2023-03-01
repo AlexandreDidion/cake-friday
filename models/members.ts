@@ -49,7 +49,7 @@ export const memberConvertor = {
       lastName: data.name.last,
       email: data.email,
       userId: data.userRef.id,
-      lastBakedAt: data.lastBakedAt
+      lastBakedAt: data.lastBakedAt ? data.lastBakedAt.toDate() : null
     })
   }
 }
