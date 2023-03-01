@@ -32,7 +32,8 @@ export default function NewTeam() {
       firstName: member.firstName,
       lastName: member.lastName,
       email: member.email,
-      userId: auth.currentUser?.uid
+      userId: auth.currentUser?.uid,
+      lastBakedAt: null,
     })
 
     const newMemberRef = doc(collection(db, "members")).withConverter(memberConvertor as any)
@@ -57,7 +58,8 @@ export default function NewTeam() {
         firstName: member.FirstName,
         lastName: member.LastName,
         email: member.Email,
-        userId: auth.currentUser?.uid
+        userId: auth.currentUser?.uid,
+        lastBakedAt: null,
       })
     })
     createMembersInBatch(properMembers)

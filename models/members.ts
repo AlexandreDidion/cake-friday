@@ -6,12 +6,22 @@ import { DocumentData, WithFieldValue, CollectionReference } from 'firebase/fire
 
 export class Member extends Human {
   userId: string | undefined
+  lastBakedAt?: Date | null
 
   constructor (
-    {firstName, lastName, email, userId} : {firstName : string, lastName: string, email: string, userId: string | undefined}
+    {firstName, lastName, email, userId, lastBakedAt = null}
+    :
+    {
+      firstName : string,
+      lastName: string,
+      email: string,
+      userId: string | undefined,
+      lastBakedAt?: Date | null
+    }
   ) {
     super({firstName, lastName, email})
     this.userId = userId
+    this.lastBakedAt = lastBakedAt
   }
 }
 
@@ -25,6 +35,7 @@ export const memberConvertor = {
       },
       email: member.email,
       createdAt: member.createdAt,
+      lastBakedAt: null,
       userRef: doc(db, `users/${member.userId}`)
     }
   },
@@ -37,7 +48,8 @@ export const memberConvertor = {
       firstName: data.name.first,
       lastName: data.name.last,
       email: data.email,
-      userId: data.userRef.id
+      userId: data.userRef.id,
+      lastBakedAt: data.lastBakedAt
     })
   }
 }
