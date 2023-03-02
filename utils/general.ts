@@ -33,3 +33,7 @@ export function extractRandomElements<T>(array: T[], numberOfElements: number) {
   }
   return result
 }
+
+export const range = (size: number, startAt: number = 1) => {
+  return [...Array(size).keys()].map(i => i + startAt);
+}

@@ -5,6 +5,7 @@ const numberOfBakers = 3 as const
 
 export const getBakers = (members: Member[]) => {
   if (!members || members.length < numberOfBakers) return
+  // TO DO RAISE ERROR !
 
   const neverBaked = members.filter((m) => !m.lastBakedAt)
   const alreadyBaked : Member[] = members.filter((m) => notEmpty<Date>(m.lastBakedAt))

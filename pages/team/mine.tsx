@@ -1,15 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { db } from '@/initFirebase'
-import { collection, query, where, getDocs, doc, DocumentData} from "firebase/firestore"
-import { memberConvertor, Member } from '@/models/members'
 import { getCurrentUser } from '@/initFirebase'
 import { GridColDef } from '@mui/x-data-grid'
-import { Loader } from '@/components/Loader'
 import { MemberTable } from '@/components/MemberTable'
 import Box from '@mui/system/Box'
-
-import { getBakers } from '@/services/pickBakers';
+import { useMyMembers } from '@/hooks/useMyMembers'
 
 const currentUser = await getCurrentUser()
 
@@ -32,36 +27,13 @@ export interface MemberRow {
 }
 
 export default function MineTeam() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [myMembers, setMyMembers] = useState<DocumentData[]>([])
   const [rows, setRows] = useState<MemberRow[]>([])
   const [showTable, setShowTable] = useState(false)
-
-  const getMyMembers = async () => {
-    setIsLoading(true)
-    if (!currentUser?.uid) return
-
-    const memberQuery = query(
-      collection(db, "members"), where("userRef", "==", doc(db, `users/${currentUser?.uid}`))
-    ).withConverter<Member>(memberConvertor as any)
-
-    const querySnapshot = await getDocs(memberQuery)
-
-    const members : Member[] = []
-
-    querySnapshot.forEach((doc) => {
-      members.push(doc.data())
-    })
-    setMyMembers(members)
-
-    setIsLoading(false)
-  }
+  const myMembers = useMyMembers(currentUser)
 
   useEffect(() => {
-    getMyMembers()
-  }, [])
+    if (myMembers.length === 0) return
 
-  useEffect(() => {
     const rows = myMembers.map((m, i) => {
       return {
         id: i,
@@ -73,8 +45,6 @@ export default function MineTeam() {
     })
     setRows(rows)
     setShowTable(true)
-    const test = getBakers(myMembers as Member[])
-    console.log(test)
   }, [myMembers])
 
   return (
@@ -82,7 +52,6 @@ export default function MineTeam() {
       <Head>
         <title>Cake - My Team</title>
       </Head>
-      {isLoading && (<Loader />)}
       <main>
         {showTable && (
           <Box sx={{width: "75vw", height: '75vh'}}>

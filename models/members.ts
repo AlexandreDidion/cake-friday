@@ -1,8 +1,7 @@
 import { Human } from './humans'
-import { doc } from "firebase/firestore"
 import { db } from '@/initFirebase';
 import { QueryDocumentSnapshot, SnapshotOptions } from '@firebase/firestore-types';
-import { DocumentData, WithFieldValue, CollectionReference } from 'firebase/firestore'
+import { collection, query, where, getDocs, doc, WithFieldValue, DocumentData} from "firebase/firestore"
 
 export class Member extends Human {
   userId: string | undefined
@@ -22,6 +21,22 @@ export class Member extends Human {
     super({firstName, lastName, email})
     this.userId = userId
     this.lastBakedAt = lastBakedAt
+  }
+
+  static async getMyMembers(userId: string) {
+    const memberQuery = query(
+      collection(db, "members"), where("userRef", "==", doc(db, `users/${userId}`))
+    ).withConverter<Member>(memberConvertor as any)
+
+    const querySnapshot = await getDocs(memberQuery)
+
+    const members : Member[] = []
+
+    querySnapshot.forEach((doc) => {
+      members.push(doc.data())
+    })
+
+    return members
   }
 }
 
