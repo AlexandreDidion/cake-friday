@@ -32,8 +32,8 @@ export const MemberTable = ({rows, columns} : {rows: MemberRow[], columns: GridC
           }}
           rows={rows}
           columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
+          pageSize={10}
+          rowsPerPageOptions={[10]}
           checkboxSelection
         />
       </div>
