@@ -47,12 +47,9 @@ export default function MineTeam() {
 
     const querySnapshot = await getDocs(memberQuery)
 
-    console.log(querySnapshot)
-
     const members : Member[] = []
 
     querySnapshot.forEach((doc) => {
-      console.log(doc.data())
       members.push(doc.data())
     })
     setMyMembers(members)
