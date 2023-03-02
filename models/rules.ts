@@ -4,13 +4,15 @@ import { DocumentData , doc, query, collection, where, getDocs} from 'firebase/f
 import dayjs from 'dayjs'
 
 export class Rule {
+  id: string
   numberOfBakers: number
   nextDay: Date
-  userId: string
+  userId: string | undefined
 
   constructor (
-    {numberOfBakers, nextDay = dayjs().toDate(), userId} : {numberOfBakers : number, nextDay?: Date, userId: string}
+    {id = self.crypto.randomUUID(), numberOfBakers, nextDay = dayjs().add(3, 'day').toDate(), userId} : {id?: string, numberOfBakers : number, nextDay?: Date, userId: string | undefined}
   ) {
+    this.id = id
     this.numberOfBakers = numberOfBakers
     this.nextDay = nextDay
     this.userId = userId
@@ -37,6 +39,7 @@ export class Rule {
 export const ruleConvertor = {
   toFirestore: (rule: Rule) : DocumentData => {
     return {
+      id: rule.id,
       numberOfBakers: rule.numberOfBakers,
       nextDay: rule.nextDay,
       userRef: doc(db, `users/${rule.userId}`)
@@ -48,6 +51,7 @@ export const ruleConvertor = {
   ) : Rule => {
     const data = snapshot.data(options)
     return new Rule({
+      id: data.id,
       numberOfBakers: data.numberOfBakers,
       nextDay: data.nextDay.toDate(),
       userId: data.userRef.id,

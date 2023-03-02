@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import TextField from '@mui/material/TextField'
 import dayjs, { Dayjs } from 'dayjs'
@@ -8,8 +8,13 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 
 
 
-export const DayPicker = ({label = 'Pick a date', onNewDate} : {label?: string, onNewDate: (date: Dayjs) => void}) => {
-  const [day, setDay] = useState(dayjs())
+export const DayPicker = ({label = 'Pick a date', initialDate = dayjs(), onNewDate} : {label?: string, initialDate: Dayjs, onNewDate: (date: Dayjs) => void}) => {
+  const [day, setDay] = useState(initialDate)
+
+  useEffect(() => {
+    setDay(initialDate)
+  }, [initialDate])
+
 
   const handleChange = (value: Dayjs | null) => {
     if (!value) return
