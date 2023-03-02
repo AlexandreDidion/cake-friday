@@ -1,6 +1,6 @@
 import { Human } from './humans'
-import { db } from '@/initFirebase';
-import { QueryDocumentSnapshot, SnapshotOptions } from '@firebase/firestore-types';
+import { db } from '@/initFirebase'
+import { QueryDocumentSnapshot, SnapshotOptions } from '@firebase/firestore-types'
 import { collection, query, where, getDocs, doc, WithFieldValue, DocumentData} from "firebase/firestore"
 
 export class Member extends Human {

@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { getCurrentUser } from '@/initFirebase'
 import { GridColDef } from '@mui/x-data-grid'
 import { MemberTable } from '@/components/MemberTable'
 import Box from '@mui/system/Box'
 import { useMyMembers } from '@/hooks/useMyMembers'
-
-const currentUser = await getCurrentUser()
 
 const TABLE_COLUMNS : GridColDef[] = [
   { field: 'firstName', headerName: 'First name', width: 150 },
@@ -29,7 +26,7 @@ export interface MemberRow {
 export default function MineTeam() {
   const [rows, setRows] = useState<MemberRow[]>([])
   const [showTable, setShowTable] = useState(false)
-  const myMembers = useMyMembers(currentUser)
+  const myMembers = useMyMembers()
 
   useEffect(() => {
     if (myMembers.length === 0) return

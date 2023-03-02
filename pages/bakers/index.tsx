@@ -3,7 +3,6 @@ import Head from 'next/head'
 import { db } from '@/initFirebase'
 import { collection, query, where, getDocs, doc, DocumentData} from "firebase/firestore"
 import { memberConvertor, Member } from '@/models/members'
-import { getCurrentUser } from '@/initFirebase'
 import { Selector } from '@/components/Selector'
 import { Loader } from '@/components/Loader'
 import Box from '@mui/system/Box'
@@ -16,10 +15,8 @@ import { getBakers } from '@/services/pickBakers'
 import { useMyMembers } from '@/hooks/useMyMembers'
 import { range } from '@/utils/general'
 
-const currentUser = await getCurrentUser()
-
 export default function Bakers() {
-  const myMembers = useMyMembers(currentUser)
+  const myMembers = useMyMembers()
   const [isLoading, setIsLoading] = useState(false)
   const [bakers, setBakers] = useState<Member[] | undefined>([])
   const [day, setDay] = useState(dayjs())

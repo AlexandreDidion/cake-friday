@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react"
 import { Member } from "@/models/members"
-import { User } from "firebase/auth"
+import { getCurrentUser } from "@/initFirebase"
 
-export const useMyMembers = (currentUser: User | null) => {
+const currentUser = await getCurrentUser()
+
+export const useMyMembers = () => {
   const [myMembers, setMyMembers] = useState<Member[]>([])
 
   const getMyMembers = async () => {
