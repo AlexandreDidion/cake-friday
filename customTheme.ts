@@ -30,6 +30,7 @@ export const mainTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
+          color: '#0B3C49',
           '&:hover': {
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: '#750D37'
@@ -42,15 +43,33 @@ export const mainTheme = createTheme({
       styleOverrides: {
         root: {
           padding: '0.5rem 1rem',
+          color: '#0B3C49'
         },
       }
     },
     MuiCardContent: {
       styleOverrides: {
         root: {
+          color: '#0B3C49',
           '&:last-child': {
             paddingBottom: 'inherit',
           }
+        }
+      }
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          color: '#0B3C49'
+        }
+      }
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#D0DDD5',
+          padding: '24px',
+          color: '#0B3C49'
         }
       }
     }

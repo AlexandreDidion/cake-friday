@@ -1,8 +1,5 @@
-import styles from '@/styles/Navbar.module.scss'
-
 import { useState, useEffect } from 'react'
 
-import Box from '@mui/material/Box'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import { SelectChangeEvent } from '@mui/material/Select'
@@ -15,16 +12,10 @@ interface SelectOptionsObject {
   value: string
 }
 
-const emptyOption = Object.freeze({
-  id: 0,
-  name: '',
-  value: ''
-})
-
 export const Selector = (
   {
     label = 'Select',
-    onChange,
+    onChoice,
     defaultValue = '',
     minWidth = '5rem',
     options
@@ -32,7 +23,7 @@ export const Selector = (
   :
   {
     label?: string,
-    onChange?: () => void,
+    onChoice?: (value: string) => void,
     defaultValue?: string,
     minWidth?: string,
     options: SelectOptionsObject[]
@@ -47,6 +38,7 @@ export const Selector = (
 
   const handleChange = (e: SelectChangeEvent<string>) => {
     setValue(e.target.value)
+    if (onChoice) onChoice(e.target.value)
   }
 
   return (
