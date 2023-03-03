@@ -2,34 +2,37 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { Rule, ruleConvertor } from '@/models/rules'
 import { db } from '@/initFirebase'
-import { collection, setDoc, doc, updateDoc } from "firebase/firestore"
+import { setDoc, doc, updateDoc } from "firebase/firestore"
+import { User } from 'firebase/auth'
 import { Member } from '@/models/members'
 import { Selector } from '@/components/Selector'
 import { Loader } from '@/components/Loader'
 import Box from '@mui/system/Box'
+import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import { DayPicker } from '@/components/DayPicker'
 import dayjs, { Dayjs } from 'dayjs'
 
 import { getBakers } from '@/services/pickBakers'
 import { getCurrentUser } from '@/initFirebase'
-import { useMyMembers } from '@/hooks/useMyMembers'
-import { useMyRule } from '@/hooks/useMyRule'
+import { getMyMembers } from '@/services/members/ownGetter'
+import { getMyRule } from '@/services/rules/ownGetter'
 import { range } from '@/utils/general'
 
 const currentUser = await getCurrentUser()
 
 export default function Bakers() {
-  const myMembers = useMyMembers()
-  let myRule = useMyRule()
+  const [myMembers, setMyMembers] = useState<Member[] | undefined>([])
+  const [myRule, setMyRule] = useState<Rule | undefined>()
   const [isLoading, setIsLoading] = useState(false)
   const [bakers, setBakers] = useState<Member[] | undefined>([])
   const [day, setDay] = useState(dayjs().add(3, 'day'))
 
   const defaultNbrBakers = () => {
     if (myRule?.numberOfBakers) return myRule.numberOfBakers
+    if (!myMembers) return 1
 
-    return (myMembers.length > 3) ? 3 : 1
+    return (myMembers?.length > 3) ? 3 : 1
   }
 
   const [nbrOfBakers, setNbrOfBakers] = useState(defaultNbrBakers())
@@ -68,21 +71,30 @@ export default function Bakers() {
       numberOfBakers: defaultNbrBakers(),
       userId: currentUser?.uid
     })
-    myRule = newRule
+    setMyRule(newRule)
 
     const newRuleRef = doc(db, "rules", newRule.id).withConverter(ruleConvertor as any)
 
     await setDoc(newRuleRef, newRule)
   }
 
+  const initializeState = async () => {
+    const members = await getMyMembers()
+    const rule = await getMyRule()
+    setMyMembers(members)
+    setMyRule(rule)
+  }
+
   useEffect(() => {
-    if (myMembers.length === 0) return
+    initializeState()
+  }, [])
+
+
+  useEffect(() => {
+    if (myMembers?.length === 0) return
     setIsLoading(true)
 
     if (!myRule) createRule()
-
-    const newBakers = getBakers(myMembers as Member[])
-    setBakers(newBakers)
 
     setIsLoading(false)
   }, [myMembers])
@@ -97,6 +109,12 @@ export default function Bakers() {
     updateRule({nextDay: date.toDate()})
   }
 
+  const onGetBakers = async () => {
+    const newBakers = await getBakers(myMembers as Member[])
+    console.log(newBakers)
+    setBakers(newBakers)
+  }
+
 
   return (
     <>
@@ -105,7 +123,7 @@ export default function Bakers() {
       </Head>
       {isLoading && (<Loader />)}
       <main>
-        <Paper variant="outlined" elevation={5}>
+        <Paper variant="outlined" sx={{marginBottom: '4rem'}}>
           <Box>
             <h3>Your rules:</h3>
             <Box sx={{margin:'2rem 0'}}>
@@ -125,6 +143,15 @@ export default function Bakers() {
             </Box>
           </Box>
         </Paper>
+        <Box>
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={onGetBakers}
+          >
+            Select next bakers
+          </Button>
+        </Box>
       </main>
     </>
   )

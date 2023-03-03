@@ -1,10 +1,15 @@
 import { Member } from "@/models/members"
 import { notEmpty, compareDatesDsc, extractRandomElements } from "@/utils/general"
+import { getMyRule } from "./rules/ownGetter"
 
-const numberOfBakers = 3 as const
+export const getBakers = async (members: Member[]) => {
+  const myRule = await getMyRule()
+  const numberOfBakers = myRule?.numberOfBakers
 
-export const getBakers = (members: Member[]) => {
+  if (!numberOfBakers) return
+
   if (!members || members.length < numberOfBakers) return
+
   // TO DO RAISE ERROR !
 
   const neverBaked = members.filter((m) => !m.lastBakedAt)

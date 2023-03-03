@@ -43,7 +43,6 @@ export const mainTheme = createTheme({
       styleOverrides: {
         root: {
           padding: '0.5rem 1rem',
-          color: '#0B3C49'
         },
       }
     },
