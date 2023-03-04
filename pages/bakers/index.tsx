@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Head from 'next/head'
 import { Rule, ruleConvertor } from '@/models/rules'
 import { db } from '@/initFirebase'
@@ -18,6 +18,7 @@ import { getCurrentUser } from '@/initFirebase'
 import { getMyMembers } from '@/services/members/ownGetter'
 import { getMyRule } from '@/services/rules/ownGetter'
 import { range } from '@/utils/general'
+import { ConfirmationModal } from '@/components/ConfirmationModal'
 
 const currentUser = await getCurrentUser()
 
@@ -27,6 +28,7 @@ export default function Bakers() {
   const [isLoading, setIsLoading] = useState(false)
   const [bakers, setBakers] = useState<Member[] | undefined>([])
   const [day, setDay] = useState(dayjs().add(3, 'day'))
+  const [showModal, setShowModal] = useState(false)
 
   const defaultNbrBakers = () => {
     if (myRule?.numberOfBakers) return myRule.numberOfBakers
@@ -113,6 +115,25 @@ export default function Bakers() {
     const newBakers = await getBakers(myMembers as Member[])
     console.log(newBakers)
     setBakers(newBakers)
+    setShowModal(true)
+  }
+
+  const contentConfirm = () => {
+    const bakerList = bakers?.map((b, i) => <li key={i}>{b.fullName()}</li>)
+
+    return (
+      <section>
+        <p>Those would be the next bakers for the {dayjs(myRule?.nextDay).format('DD/MM')} :</p>
+        <ul style={{margin: '1rem 0'}}>
+          {bakerList}
+        </ul>
+        <p>We will send email confirmation to them. Good to go ?</p>
+      </section>
+    )
+  }
+
+  const onCloseModal = () => {
+    setShowModal(false)
   }
 
 
@@ -152,6 +173,14 @@ export default function Bakers() {
             Select next bakers
           </Button>
         </Box>
+        {showModal && (
+          <ConfirmationModal
+            open={showModal}
+            onClose={onCloseModal}
+            title="Confirm and send emails"
+            content={contentConfirm()}
+          />
+        )}
       </main>
     </>
   )
