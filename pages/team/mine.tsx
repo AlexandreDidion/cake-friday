@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { GridColDef } from '@mui/x-data-grid'
 import { MemberTable } from '@/components/MemberTable'
+import { Member } from '@/models/members'
 import Box from '@mui/system/Box'
-import { useMyMembers } from '@/hooks/useMyMembers'
+import { getMyMembers } from '@/services/members/ownGetter'
 
 const TABLE_COLUMNS : GridColDef[] = [
   { field: 'firstName', headerName: 'First name', width: 150 },
@@ -26,12 +27,21 @@ export interface MemberRow {
 export default function MineTeam() {
   const [rows, setRows] = useState<MemberRow[]>([])
   const [showTable, setShowTable] = useState(false)
-  const myMembers = useMyMembers()
+  const [myMembers, setMyMembers] = useState<Member[] | undefined>([])
+
+  const initializeState = async () => {
+    const members = await getMyMembers()
+    setMyMembers(members)
+  }
 
   useEffect(() => {
-    if (myMembers.length === 0) return
+    initializeState()
+  }, [])
 
-    const rows = myMembers.map((m, i) => {
+  useEffect(() => {
+    if (myMembers?.length === 0) return
+
+    const rows = myMembers?.map((m, i) => {
       return {
         id: i,
         firstName: m.firstName ,
@@ -40,6 +50,9 @@ export default function MineTeam() {
         lastBakedAt: m.lastBakedAt
       }
     })
+
+    if (!rows) return
+
     setRows(rows)
     setShowTable(true)
   }, [myMembers])
