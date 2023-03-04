@@ -4,5 +4,11 @@ service cloud.firestore {
     match /members/{memberId} {
       allow read, write: if true;
     }
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+    match /rules/{ruleId} {
+      allow read, write: if true;
+    }
   }
 }
