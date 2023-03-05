@@ -1,9 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { Rule, ruleConvertor } from '@/models/rules'
 import { db } from '@/initFirebase'
 import { setDoc, doc, updateDoc } from "firebase/firestore"
-import { User } from 'firebase/auth'
 import { Member } from '@/models/members'
 import { Selector } from '@/components/Selector'
 import { Loader } from '@/components/Loader'
@@ -12,6 +11,7 @@ import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import { DayPicker } from '@/components/DayPicker'
 import dayjs, { Dayjs } from 'dayjs'
+import { googleCalendarLink, outlookCalendarLink } from '@/services/toCalendarGenerator'
 
 import { getBakers } from '@/services/pickBakers'
 import { getCurrentUser } from '@/initFirebase'
@@ -136,6 +136,18 @@ export default function Bakers() {
     setShowModal(false)
   }
 
+  const confirmBakers = () => {
+    const params = {
+      startAt: myRule?.nextDay,
+      endsAt: dayjs(myRule?.nextDay).add(30, 'm').toDate(),
+      subject: 'Friday Cake',
+      description: 'You have to cook a cake',
+    }
+    const test = outlookCalendarLink(params)
+    const test2 = googleCalendarLink(params)
+    console.log(test)
+    console.log(test2)
+  }
 
   return (
     <>
@@ -177,6 +189,7 @@ export default function Bakers() {
           <ConfirmationModal
             open={showModal}
             onClose={onCloseModal}
+            onConfirm={confirmBakers}
             title="Confirm and send emails"
             content={contentConfirm()}
           />
