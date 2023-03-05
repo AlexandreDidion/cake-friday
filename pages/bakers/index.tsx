@@ -11,7 +11,8 @@ import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import { DayPicker } from '@/components/DayPicker'
 import dayjs, { Dayjs } from 'dayjs'
-import { googleCalendarLink, outlookCalendarLink } from '@/services/toCalendarGenerator'
+import { googleCalendarLink, outlookCalendarLink } from '@/services/mailers/toCalendarGenerator'
+import { sendBakerNotificationMail } from '@/services/mailers/sendMail'
 
 import { getBakers } from '@/services/pickBakers'
 import { getCurrentUser } from '@/initFirebase'
@@ -136,7 +137,7 @@ export default function Bakers() {
     setShowModal(false)
   }
 
-  const confirmBakers = () => {
+  const confirmBakers = async () => {
     const params = {
       startAt: myRule?.nextDay,
       endsAt: dayjs(myRule?.nextDay).add(30, 'm').toDate(),
@@ -145,6 +146,7 @@ export default function Bakers() {
     }
     const test = outlookCalendarLink(params)
     const test2 = googleCalendarLink(params)
+    sendBakerNotificationMail(bakers[0], currentUser, myRule?.nextDay, outlookCalendarLink, googleCalendarLink)
     console.log(test)
     console.log(test2)
   }
