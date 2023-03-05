@@ -24,8 +24,11 @@ function createFirebaseApp(config: FirebaseOptions) {
 const firebaseApp = createFirebaseApp(config)
 export const db = getFirestore(firebaseApp)
 export const auth = getAuth(firebaseApp)
-connectFirestoreEmulator(db, 'localhost', 8080)
-connectAuthEmulator(auth, 'http://localhost:9099')
+if (process.env.NODE_ENV === "development") {
+  connectFirestoreEmulator(db, 'localhost', 8080)
+  connectAuthEmulator(auth, 'http://localhost:9099')
+}
+
 
 export const getCurrentUser : () => Promise<User | null> = () => {
   return new Promise((resolve) => {
