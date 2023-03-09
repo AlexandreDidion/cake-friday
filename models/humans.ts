@@ -1,12 +1,25 @@
 export class Human {
+  id: string
   firstName: string
   lastName: string
   email: string
   createdAt : Date
 
   constructor (
-    {firstName, lastName, email} : {firstName : string, lastName: string, email: string}
+    {
+      id = self.crypto.randomUUID(),
+      firstName,
+      lastName,
+      email
+    } :
+    {
+      id?: string
+      firstName : string,
+      lastName: string,
+      email: string
+    }
   ) {
+    this.id = id
     this.firstName = firstName
     this.lastName = lastName
     this.email = email

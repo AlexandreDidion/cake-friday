@@ -19,6 +19,7 @@ import { getMyMembers } from '@/services/members/ownGetter'
 import { getMyRule } from '@/services/rules/ownGetter'
 import { range } from '@/utils/general'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
+import { updateMembers } from '@/services/members/updator'
 
 const currentUser = await getCurrentUser()
 
@@ -136,18 +137,19 @@ export default function Bakers() {
     setShowModal(false)
   }
 
-  const confirmBakers = async () => {
+  const sendEmails = async () => {
     const params = {
       startAt: myRule?.nextDay,
       endsAt: dayjs(myRule?.nextDay).add(30, 'm').toDate(),
       subject: 'Friday Cake',
       description: 'You have to cook a cake',
     }
-    const test = outlookCalendarLink(params)
-    const test2 = googleCalendarLink(params)
-    const testFile = createIcsFileText(params)
-    console.log(testFile)
-    const sendEmailResponse = await fetch('/api/mailer/sendBakerNotification', {
+
+    const outlookUrl = outlookCalendarLink(params)
+    const googleUrl = googleCalendarLink(params)
+    const textFile = createIcsFileText(params)
+
+    await fetch('/api/mailer/sendBakerNotification', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -156,12 +158,30 @@ export default function Bakers() {
         recipient: bakers,
         sender: currentUser,
         date: dayjs(myRule?.nextDay).format('DD/MM'),
-        outlookUrl: test,
-        googleUrl: test2,
-        textFile: testFile
+        outlookUrl: outlookUrl,
+        googleUrl: googleUrl,
+        textFile: textFile
       }),
     })
-    console.log(sendEmailResponse, sendEmailResponse.body)
+  }
+
+  const updateBakersLastBaked = async () => {
+    const updates = {field: 'lastBakedAt', value: myRule?.nextDay}
+    const mapUpdates = new Map()
+    bakers?.forEach((b) => mapUpdates.set(b, updates))
+
+    await updateMembers(mapUpdates)
+  }
+
+  const confirmBakers = async () => {
+    setIsLoading(true)
+
+    await sendEmails()
+    await updateBakersLastBaked()
+
+    setIsLoading(false)
+
+    setShowModal(false)
   }
 
   return (

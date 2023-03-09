@@ -5,9 +5,9 @@ export class User extends Human {
   password: string
 
   constructor (
-    {firstName, lastName, email, password} : {firstName : string, lastName: string, email: string, password: string}
+    {id, firstName, lastName, email, password} : {id?: string, firstName : string, lastName: string, email: string, password: string}
   ) {
-    super({firstName, lastName, email})
+    super({id, firstName, lastName, email})
     this.password = password
   }
 }
@@ -16,6 +16,7 @@ export class User extends Human {
 export const userConvertor = {
   toFirestore: (user: PartialWithFieldValue<User>) : DocumentData => {
     return {
+      id: user.id,
       name: {
         first: user.firstName,
         last: user.lastName,
@@ -31,6 +32,7 @@ export const userConvertor = {
   ) : User => {
     const data = snapshot.data(options)
     return new User({
+      id: data.id,
       firstName: data.name.first,
       lastName: data.name.last,
       password: data.password,

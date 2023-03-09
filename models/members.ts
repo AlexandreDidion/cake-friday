@@ -8,9 +8,10 @@ export class Member extends Human {
   lastBakedAt?: Date | null
 
   constructor (
-    {firstName, lastName, email, userId, lastBakedAt = null}
+    {id, firstName, lastName, email, userId, lastBakedAt = null}
     :
     {
+      id?: string
       firstName : string,
       lastName: string,
       email: string,
@@ -18,7 +19,7 @@ export class Member extends Human {
       lastBakedAt?: Date | null
     }
   ) {
-    super({firstName, lastName, email})
+    super({id, firstName, lastName, email})
     this.userId = userId
     this.lastBakedAt = lastBakedAt
   }
@@ -44,6 +45,7 @@ export class Member extends Human {
 export const memberConvertor = {
   toFirestore: (member: WithFieldValue<Member>) : DocumentData => {
     return {
+      id: member.id,
       name: {
         first: member.firstName,
         last: member.lastName,
@@ -60,6 +62,7 @@ export const memberConvertor = {
   ) : Member => {
     const data = snapshot.data(options)
     return new Member({
+      id: data.id,
       firstName: data.name.first,
       lastName: data.name.last,
       email: data.email,

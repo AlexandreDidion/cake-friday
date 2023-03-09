@@ -36,7 +36,7 @@ export default function NewTeam() {
       lastBakedAt: null,
     })
 
-    const newMemberRef = doc(collection(db, "members")).withConverter(memberConvertor as any)
+    const newMemberRef = doc(db, "members", newMember.id).withConverter(memberConvertor as any)
 
     await setDoc(newMemberRef, newMember)
   }
@@ -71,7 +71,7 @@ export default function NewTeam() {
     const batch = writeBatch(db)
 
     membersToSave.forEach((member) => {
-      const newMemberRef = doc(collection(db, "members")).withConverter(memberConvertor as any)
+      const newMemberRef = doc(db, "members", member.id).withConverter(memberConvertor as any)
       batch.set(newMemberRef, member)
     })
 
