@@ -3,8 +3,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { db, auth } from '@/initFirebase'
 import { parseExcel, FromExcelMember } from '@/services/excelParser'
-import { collection, setDoc, doc, writeBatch } from "firebase/firestore"
+import { setDoc, doc, writeBatch } from "firebase/firestore"
 import { Member, memberConvertor } from '@/models/members'
+import { getCurrentUser } from '@/initFirebase'
 
 import { MemberForm } from '@/components/MemberForm'
 import { Loader } from '@/components/Loader'

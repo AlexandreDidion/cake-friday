@@ -13,6 +13,7 @@ import { UserObject as LogInObject  } from '@/components/LogIn'
 
 const createUser = async (user: SignUpObject, newUserId: string) => {
   const newUser = new User({
+    id: newUserId,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
