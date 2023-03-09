@@ -11,8 +11,7 @@ import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
 import { DayPicker } from '@/components/DayPicker'
 import dayjs, { Dayjs } from 'dayjs'
-import { googleCalendarLink, outlookCalendarLink } from '@/services/mailers/toCalendarGenerator'
-import { sendBakerNotificationMail } from '@/services/mailers/sendMail'
+import { googleCalendarLink, outlookCalendarLink, createIcsFileText } from '@/services/mailers/toCalendarGenerator'
 
 import { getBakers } from '@/services/pickBakers'
 import { getCurrentUser } from '@/initFirebase'
@@ -146,9 +145,23 @@ export default function Bakers() {
     }
     const test = outlookCalendarLink(params)
     const test2 = googleCalendarLink(params)
-    sendBakerNotificationMail(bakers[0], currentUser, myRule?.nextDay, outlookCalendarLink, googleCalendarLink)
-    console.log(test)
-    console.log(test2)
+    const testFile = createIcsFileText(params)
+    console.log(testFile)
+    const sendEmailResponse = await fetch('/api/mailer/sendBakerNotification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        recipient: bakers,
+        sender: currentUser,
+        date: dayjs(myRule?.nextDay).format('DD/MM'),
+        outlookUrl: test,
+        googleUrl: test2,
+        textFile: testFile
+      }),
+    })
+    console.log(sendEmailResponse, sendEmailResponse.body)
   }
 
   return (

@@ -38,7 +38,7 @@ export const googleCalendarLink = (
   return `${baseUrl}?${encodeGetParams(params)}`
 }
 
-export const createIcsFile = (
+export const createIcsFileText = (
   { startAt, endsAt, subject, isAllDay = false, description = '' }
   :
   { startAt: Date | undefined, endsAt: Date | undefined, subject: string, isAllDay?: boolean, description?: string}
@@ -46,8 +46,8 @@ export const createIcsFile = (
   const params = {
     summary: subject,
     description: description,
-    startTime: startAt,
-    endTime: endsAt,
+    startTime: dayjs(startAt),
+    endTime: dayjs(endsAt),
   }
 
   const icsContent = `
@@ -57,19 +57,20 @@ export const createIcsFile = (
     BEGIN:VEVENT
     UID:${params.startTime?.toISOString()}-fridayCake
     DTSTAMP:${dayjs().toISOString()}
-    DTSTART:${params.startTime?.toISOString()}
-    DTEND:${params.endTime?.toISOString()}
+    DTSTART:${params.startTime?.format('YYYYMMDDTHHmmss')}
+    DTEND:${params.endTime?.format('YYYYMMDDTHHmmss')}
     SUMMARY:${params.summary}
     DESCRIPTION:${params.description}
+    BEGIN:VALARM
+    ACTION:DISPLAY
+    DESCRIPTION:Friday Cake
+    TRIGGER:-P1D
+    END:VALARM
     END:VEVENT
     END:VCALENDAR
   `
 
-  const file = new File([icsContent], 'calendarEvent.ics', {
-    type: 'text/calendar',
-  })
-
-  return file
+  return icsContent
 }
 
 const encodeGetParams = (params : object) => {
