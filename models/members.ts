@@ -52,7 +52,7 @@ export const memberConvertor = {
       },
       email: member.email,
       createdAt: member.createdAt,
-      lastBakedAt: null,
+      lastBakedAt: member.lastBakedAt,
       userRef: doc(db, `users/${member.userId}`)
     }
   },

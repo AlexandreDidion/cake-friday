@@ -60,7 +60,7 @@ export default function NewTeam() {
         lastName: member.LastName,
         email: member.Email,
         userId: auth.currentUser?.uid,
-        lastBakedAt: null,
+        lastBakedAt: member.LastBakedAt || null,
       })
     })
     createMembersInBatch(properMembers)

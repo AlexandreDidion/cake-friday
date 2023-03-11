@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import dayjs from 'dayjs'
 import Head from 'next/head'
 import { GridColDef } from '@mui/x-data-grid'
 import { MemberTable } from '@/components/MemberTable'
@@ -18,7 +19,16 @@ const TABLE_COLUMNS : GridColDef[] = [
     headerName: 'Email',
     width: 300,
   },
-  { field: 'lastBakedAt', headerName: 'Last cake', width: 150 },
+  {
+    field: 'lastBakedAt',
+    headerName: 'Last cake',
+    width: 150,
+    valueFormatter: (params) => {
+      if (!params.value) return
+
+      return dayjs(params.value).format('DD/MM/YY')
+    }
+  },
 ]
 
 export interface MemberRow {
