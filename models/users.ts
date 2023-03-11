@@ -40,10 +40,8 @@ export const userConvertor = {
   toFirestore: (user: PartialWithFieldValue<User>) : DocumentData => {
     return {
       id: user.id,
-      name: {
-        first: user.firstName,
-        last: user.lastName,
-      },
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       password: user.password,
       createdAt: user.createdAt
@@ -56,8 +54,8 @@ export const userConvertor = {
     const data = snapshot.data(options)
     return new User({
       id: data.id,
-      firstName: data.name.first,
-      lastName: data.name.last,
+      firstName: data.firstName,
+      lastName: data.lastName,
       password: data.password,
       email: data.email,
     })

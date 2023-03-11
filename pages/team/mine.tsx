@@ -10,19 +10,42 @@ import { getMyMembers } from '@/services/members/ownGetter'
 import { getCurrentUser } from '@/initFirebase'
 import { User } from '@/models/users'
 import { createMember } from '@/services/members/creator'
+import { GridValueSetterParams } from '@mui/x-data-grid'
+import { updateMember } from '@/services/members/updator'
+
+const onEditMember = (params: GridValueSetterParams, columnName: string) => {
+  updateMember(params.row.id, { [columnName]: params.value })
+  return  { ...params.row, [columnName]: params.value }
+}
 
 const TABLE_COLUMNS : GridColDef[] = [
-  { field: 'firstName', headerName: 'First name', width: 150 },
-  { field: 'lastName', headerName: 'Last name', width: 150 },
+  {
+    field: 'firstName',
+    headerName: 'First name',
+    width: 150,
+    editable: true,
+    valueSetter: (params) => onEditMember(params, 'firstName'),
+  },
+  {
+    field: 'lastName',
+    headerName: 'Last name',
+    width: 150,
+    editable: true,
+    valueSetter: (params) => onEditMember(params, 'lastName'),
+  },
   {
     field: 'email',
     headerName: 'Email',
     width: 300,
+    editable: true,
+    valueSetter: (params) => onEditMember(params, 'email'),
   },
   {
     field: 'lastBakedAt',
     headerName: 'Last cake',
     width: 150,
+    editable: true,
+    valueSetter: (params) => onEditMember(params, 'lastBakedAt'),
     valueFormatter: (params) => {
       if (!params.value) return
 
@@ -32,7 +55,7 @@ const TABLE_COLUMNS : GridColDef[] = [
 ]
 
 export interface MemberRow {
-  id: number
+  id: string
   firstName: string
   lastName: string
   email: string
@@ -67,9 +90,9 @@ export default function MineTeam() {
   useEffect(() => {
     if (myMembers?.length === 0) return
 
-    const rows = myMembers?.map((m, i) => {
+    const rows = myMembers?.map((m) => {
       return {
-        id: i,
+        id: m.id,
         firstName: m.firstName ,
         lastName: m.lastName,
         email: m.email,

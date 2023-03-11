@@ -46,10 +46,8 @@ export const memberConvertor = {
   toFirestore: (member: WithFieldValue<Member>) : DocumentData => {
     return {
       id: member.id,
-      name: {
-        first: member.firstName,
-        last: member.lastName,
-      },
+      firstName: member.firstName,
+      lastName: member.lastName,
       email: member.email,
       createdAt: member.createdAt,
       lastBakedAt: member.lastBakedAt,
@@ -63,8 +61,8 @@ export const memberConvertor = {
     const data = snapshot.data(options)
     return new Member({
       id: data.id,
-      firstName: data.name.first,
-      lastName: data.name.last,
+      firstName: data.firstName,
+      lastName: data.lastName,
       email: data.email,
       userId: data.userRef.id,
       lastBakedAt: data.lastBakedAt ? data.lastBakedAt.toDate() : null

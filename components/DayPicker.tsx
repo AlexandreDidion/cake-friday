@@ -4,9 +4,7 @@ import TextField from '@mui/material/TextField'
 import dayjs, { Dayjs } from 'dayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
-
-
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker'
 
 export const DayPicker = ({label = 'Pick a date', initialDate = dayjs(), onNewDate} : {label?: string, initialDate: Dayjs, onNewDate: (date: Dayjs) => void}) => {
   const [day, setDay] = useState(initialDate)
@@ -25,9 +23,9 @@ export const DayPicker = ({label = 'Pick a date', initialDate = dayjs(), onNewDa
 
   return (
   <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <DesktopDatePicker
+    <DesktopDateTimePicker
       label={label}
-      inputFormat="DD/MM/YYYY"
+      inputFormat="DD/MM/YYYY - HH:mm"
       value={day}
       onChange={handleChange}
       renderInput={(params) => <TextField {...params} />}

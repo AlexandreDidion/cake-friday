@@ -1,4 +1,4 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridToolbar } from '@mui/x-data-grid'
 
 import { MemberRow } from '@/pages/team/mine'
 
@@ -35,6 +35,7 @@ export const MemberTable = ({rows, columns} : {rows: MemberRow[], columns: GridC
           pageSize={10}
           rowsPerPageOptions={[10]}
           checkboxSelection
+          components={{ Toolbar: GridToolbar }}
         />
       </div>
     </div>
