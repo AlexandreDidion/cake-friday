@@ -44,7 +44,7 @@ export default function MineTeam() {
     if (!myMembers || !(myMembers.length > 0)) return false
 
     const myself = myMembers.find((m) => {
-      m.email === currentUser?.email
+      return m.email === currentUser?.email
     })
 
     return !!myself
